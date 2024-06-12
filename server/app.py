@@ -25,6 +25,25 @@ db.init_app(app)
 def home():
     return ''
 
+@app.route('/scientists', methods=['GET'])
+def get_scientists():
+    scientists = Scientist.query.all()
+    return jsonify([scientist.serialize() for scientist in scientists])
+
+@app.route('/scientists', methods=['POST'])
+def create_scientist():
+    data = request.json
+    scientist = Scientist(**data)
+    db.session.add(scientist)
+    db.session.commit()
+    return jsonify(scientist.serialize())
+
+@app.route('/scientists/<int:id>', methods=['GET'])
+def get_scientist(id):
+    scientist = Scientist.query.get(id)
+    return jsonify(scientist.serialize()) 
+
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
